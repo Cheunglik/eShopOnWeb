@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using BlazorShared.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.eShopWeb.Web.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
@@ -13,11 +15,12 @@ public class RevokeAuthenticationEvents : CookieAuthenticationEvents
 {
     private readonly IMemoryCache _cache;
     private readonly ILogger _logger;
-
-    public RevokeAuthenticationEvents(IMemoryCache cache, ILogger<RevokeAuthenticationEvents> logger)
+    private readonly ICatalogItemViewModelService _catalogItemViewModelService;
+    public RevokeAuthenticationEvents(IMemoryCache cache, ILogger<RevokeAuthenticationEvents> logger, ICatalogItemViewModelService catalogItemViewModelService)
     {
         _cache = cache;
         _logger = logger;
+        _catalogItemViewModelService = catalogItemViewModelService;
     }
 
     public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
