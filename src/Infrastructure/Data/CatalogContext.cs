@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System.Reflection;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Entities.BasketAggregate;
@@ -9,7 +12,10 @@ namespace Microsoft.eShopWeb.Infrastructure.Data;
 public class CatalogContext : DbContext
 {
     #pragma warning disable CS8618 // Required by Entity Framework
-    public CatalogContext(DbContextOptions<CatalogContext> options) : base(options) {}
+    public CatalogContext(DbContextOptions<CatalogContext> options, IHttpContextAccessor httpContextAccessor) : base(options) 
+    {
+        var name = httpContextAccessor.HttpContext?.User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+    }
 
     public DbSet<Basket> Baskets { get; set; }
     public DbSet<CatalogItem> CatalogItems { get; set; }
